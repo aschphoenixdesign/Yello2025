@@ -1,3 +1,6 @@
-*
-!.gitignore
-!index.html
+.DS_Store
+*.ai
+assets copy/
+CONFIDENTIALITY AND NON-DISCLOSURE AGREEMENT.pdf
+design elements/
+design elements.ai
