@@ -133,13 +133,13 @@ body {
 }
 
 /* ===== SCROLL REVEAL ===== */
-.reveal { opacity: 0; transform: translateY(40px); transition: opacity 1s ease, transform 1s ease; }
+.reveal { opacity: 0; transform: translateY(40px); transition: opacity 2.5s ease-out, transform 2.5s ease-out; }
 .reveal.visible { opacity: 1; transform: translateY(0); }
-.reveal-left { opacity: 0; transform: translateX(-60px); transition: opacity 1s ease, transform 1s ease; }
+.reveal-left { opacity: 0; transform: translateX(-60px); transition: opacity 2.5s ease-out, transform 2.5s ease-out; }
 .reveal-left.visible { opacity: 1; transform: translateX(0); }
-.reveal-right { opacity: 0; transform: translateX(60px); transition: opacity 1s ease, transform 1s ease; }
+.reveal-right { opacity: 0; transform: translateX(60px); transition: opacity 2.5s ease-out, transform 2.5s ease-out; }
 .reveal-right.visible { opacity: 1; transform: translateX(0); }
-.reveal-scale { opacity: 0; transform: scale(0.85); transition: opacity 1.2s ease, transform 1.2s ease; }
+.reveal-scale { opacity: 0; transform: scale(0.85); transition: opacity 3s ease-out, transform 3s ease-out; }
 .reveal-scale.visible { opacity: 1; transform: scale(1); }
 
 /* ===== 1. PITCH DECK TITLE / HERO ===== */
@@ -244,6 +244,8 @@ body {
   border-radius: 8px;
   border: 2px solid rgba(130,80,220,0.4);
   box-shadow: 0 0 60px rgba(130,80,220,0.2);
+  position: relative;
+  z-index: 1;
 }
 
 /* ===== 4. TITLE & LOGLINE ===== */
@@ -436,12 +438,20 @@ body {
   position: relative;
   overflow: hidden;
 }
-.worlds-split-left video, .worlds-split-right img {
+.worlds-split-left video, .worlds-split-right video, .worlds-split-right img {
   position: absolute;
   top: 0; left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  pointer-events: none;
+  z-index: 0;
+}
+.worlds-split-left video::-webkit-media-controls {
+  display: none !important;
+}
+.worlds-split-left video::-webkit-media-controls-start-playback-button {
+  display: none !important;
 }
 .worlds-split-left::after, .worlds-split-right::after {
   content: '';
@@ -455,6 +465,11 @@ body {
   width: 100%;
   max-width: 1400px;
   padding: 60px 40px;
+  background: rgba(10,10,50,0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(130,80,220,0.25);
+  border-radius: 16px;
 }
 .worlds-content h2 {
   font-family: 'Playfair Display', serif;
@@ -467,7 +482,7 @@ body {
 }
 .worlds-locations {
   display: flex;
-  gap: 0;
+  gap: 20px;
   margin-top: 20px;
 }
 .world-card {
@@ -530,7 +545,7 @@ body {
 }
 .characters-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 20px;
   max-width: 1200px;
   width: 100%;
@@ -548,11 +563,34 @@ body {
   border-color: #d4ff00;
   box-shadow: 0 15px 50px rgba(212,255,0,0.15), 0 0 30px rgba(130,80,220,0.2);
 }
-.char-vid { width: 100%; aspect-ratio: 1; overflow: hidden; background: #000; }
+.char-vid { width: 100%; aspect-ratio: 1; overflow: hidden; background: #000; position: relative; cursor: pointer; }
 .char-vid video, .char-vid img { width: 100%; height: 100%; object-fit: cover; }
-.char-info { padding: 14px; text-align: center; }
+.char-vid::after {
+  content: '▶ hover to play';
+  position: absolute;
+  bottom: 8px; left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.7rem;
+  color: rgba(255,255,255,0.6);
+  background: rgba(0,0,0,0.5);
+  padding: 4px 10px;
+  border-radius: 12px;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.char-card:hover .char-vid::after { opacity: 0; }
+.char-info { padding: 14px; text-align: left; }
 .char-info h3 { font-family: 'Playfair Display', serif; font-size: 1rem; color: #d4ff00; margin-bottom: 5px; }
 .char-info p { font-size: 0.78rem; color: rgba(200,200,230,0.6); line-height: 1.4; font-style: italic; }
+.char-card.star {
+  grid-column: 1 / -1;
+  max-width: 500px;
+  margin: 0 auto 20px;
+  border-color: #d4ff00;
+  box-shadow: 0 0 40px rgba(212,255,0,0.15), 0 0 80px rgba(212,255,0,0.05);
+}
+.char-card.star .char-info h3 { font-size: 1.3rem; }
+.char-card.star .char-info p { font-size: 0.9rem; }
 
 /* ===== 9. SYNOPSIS ===== */
 #synopsis {
@@ -563,8 +601,55 @@ body {
   justify-content: center;
   padding: 80px 40px;
   text-align: left;
+  position: relative;
+  overflow: hidden;
 }
-.synopsis-inner { max-width: 800px; }
+#synopsis::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image:
+    radial-gradient(2px 2px at 10% 10%, rgba(255,255,255,0.8), transparent),
+    radial-gradient(2px 2px at 25% 20%, rgba(255,255,255,0.6), transparent),
+    radial-gradient(1px 1px at 40% 8%, rgba(255,255,255,0.7), transparent),
+    radial-gradient(2px 2px at 55% 15%, rgba(255,255,255,0.5), transparent),
+    radial-gradient(1px 1px at 70% 5%, rgba(255,255,255,0.8), transparent),
+    radial-gradient(2px 2px at 85% 18%, rgba(255,255,255,0.6), transparent),
+    radial-gradient(1px 1px at 15% 35%, rgba(255,255,255,0.5), transparent),
+    radial-gradient(2px 2px at 35% 45%, rgba(255,255,255,0.7), transparent),
+    radial-gradient(1px 1px at 60% 40%, rgba(255,255,255,0.6), transparent),
+    radial-gradient(2px 2px at 80% 50%, rgba(255,255,255,0.8), transparent),
+    radial-gradient(1px 1px at 20% 60%, rgba(255,255,255,0.5), transparent),
+    radial-gradient(2px 2px at 45% 70%, rgba(255,255,255,0.7), transparent),
+    radial-gradient(1px 1px at 75% 65%, rgba(255,255,255,0.6), transparent),
+    radial-gradient(2px 2px at 90% 75%, rgba(255,255,255,0.5), transparent),
+    radial-gradient(1px 1px at 30% 85%, rgba(255,255,255,0.8), transparent),
+    radial-gradient(2px 2px at 50% 90%, rgba(255,255,255,0.6), transparent),
+    radial-gradient(1px 1px at 65% 80%, rgba(255,255,255,0.7), transparent),
+    radial-gradient(2px 2px at 95% 88%, rgba(255,255,255,0.5), transparent),
+    /* firefly glows */
+    radial-gradient(6px 6px at 8% 25%, rgba(212,255,0,0.9), rgba(212,255,0,0.2) 50%, transparent),
+    radial-gradient(5px 5px at 30% 55%, rgba(212,255,0,0.7), rgba(212,255,0,0.15) 50%, transparent),
+    radial-gradient(6px 6px at 65% 30%, rgba(212,255,0,0.8), rgba(212,255,0,0.2) 50%, transparent),
+    radial-gradient(5px 5px at 90% 60%, rgba(212,255,0,0.7), rgba(212,255,0,0.15) 50%, transparent),
+    radial-gradient(6px 6px at 15% 80%, rgba(212,255,0,0.8), rgba(212,255,0,0.2) 50%, transparent),
+    radial-gradient(5px 5px at 75% 85%, rgba(212,255,0,0.9), rgba(212,255,0,0.2) 50%, transparent),
+    radial-gradient(5px 5px at 50% 15%, rgba(212,255,0,0.5), rgba(212,255,0,0.1) 50%, transparent),
+    radial-gradient(5px 5px at 40% 95%, rgba(212,255,0,0.5), rgba(212,255,0,0.1) 50%, transparent);
+  animation: firefly-twinkle 4s ease-in-out infinite alternate;
+}
+.synopsis-inner {
+  max-width: 800px;
+  position: relative;
+  z-index: 1;
+  background: rgba(10,10,50,0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(130,80,220,0.25);
+  border-radius: 16px;
+  padding: 40px;
+}
 .synopsis-inner h2 {
   font-family: 'Playfair Display', serif;
   font-size: clamp(2rem, 5vw, 3rem);
@@ -591,7 +676,7 @@ body {
 .story-section.dark1 { background: linear-gradient(135deg, #050520, #0a0a50); }
 .story-section.dark2 { background: linear-gradient(135deg, #0a0a40, #050530); }
 .story-inner {
-  max-width: 1100px; width: 100%;
+  max-width: 1400px; width: 100%;
   display: flex;
   gap: 50px;
   align-items: center;
@@ -626,25 +711,23 @@ body {
 }
 .story-text p { font-size: 1rem; line-height: 1.8; color: rgba(200,200,230,0.85); margin-bottom: 16px; }
 .scene-strip {
-  display: flex;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
   margin-top: 20px;
-  overflow-x: auto;
   padding-bottom: 8px;
+  width: 100%;
+  flex-basis: 100%;
 }
-.scene-strip::-webkit-scrollbar { height: 4px; }
-.scene-strip::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
-.scene-strip::-webkit-scrollbar-thumb { background: rgba(212,255,0,0.3); border-radius: 2px; }
 .scene-thumb {
-  min-width: 120px; height: 80px;
-  border-radius: 8px;
+  aspect-ratio: 16/9;
+  border-radius: 12px;
   overflow: hidden;
   border: 1px solid rgba(130,80,220,0.3);
   transition: all 0.3s;
-  flex-shrink: 0;
   cursor: pointer;
 }
-.scene-thumb:hover { border-color: #d4ff00; transform: scale(1.05); box-shadow: 0 4px 20px rgba(212,255,0,0.2); }
+.scene-thumb:hover { border-color: #d4ff00; transform: scale(1.03); box-shadow: 0 4px 20px rgba(212,255,0,0.2); }
 .scene-thumb img { width: 100%; height: 100%; object-fit: cover; }
 
 /* ===== MASON JAR ===== */
@@ -676,6 +759,22 @@ body {
   background: linear-gradient(to bottom, #888, #666);
   border-radius: 8px 8px 0 0;
   border: 2px solid rgba(255,255,255,0.2);
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease;
+  transform-origin: left bottom;
+}
+.jar-container.open .jar-lid {
+  transform: rotate(-120deg) translateY(-20px);
+  opacity: 0.6;
+}
+.jar-container.open .jar-firefly {
+  animation: jar-fly-out 1.5s ease-out forwards;
+}
+.jar-container.open .jar-firefly:nth-child(2) { animation-delay: 0.15s; }
+.jar-container.open .jar-firefly:nth-child(3) { animation-delay: 0.3s; }
+@keyframes jar-fly-out {
+  0% { opacity: 1; }
+  50% { transform: translate(130px, -100px); opacity: 1; }
+  100% { transform: translate(130px, -400px); opacity: 0; }
 }
 .jar-firefly {
   position: absolute;
@@ -735,23 +834,85 @@ body {
 
 /* ===== 15. FINAL SPARK ===== */
 #final-spark {
-  min-height: 60vh;
-  background: linear-gradient(180deg, #050520, #000);
+  min-height: 100vh;
+  background: radial-gradient(ellipse at center, #0a0a3a 0%, #050520 40%, #000 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 60px 40px;
+  padding: 80px 40px;
+  position: relative;
+  overflow: hidden;
 }
+#final-spark::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(2px 2px at 20% 30%, rgba(212,255,0,0.3), transparent),
+              radial-gradient(2px 2px at 40% 70%, rgba(212,255,0,0.2), transparent),
+              radial-gradient(2px 2px at 60% 20%, rgba(212,255,0,0.25), transparent),
+              radial-gradient(2px 2px at 80% 60%, rgba(212,255,0,0.15), transparent),
+              radial-gradient(3px 3px at 10% 80%, rgba(212,255,0,0.3), transparent),
+              radial-gradient(2px 2px at 90% 40%, rgba(212,255,0,0.2), transparent),
+              radial-gradient(2px 2px at 50% 90%, rgba(212,255,0,0.25), transparent),
+              radial-gradient(3px 3px at 70% 10%, rgba(212,255,0,0.15), transparent);
+  animation: sparkle-field 4s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+@keyframes sparkle-field {
+  0% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.7; }
+  100% { opacity: 0.4; transform: scale(1.02); }
+}
+.spark-content { max-width: 800px; position: relative; z-index: 1; }
 .spark-content h2 {
   font-family: 'Playfair Display', serif;
-  font-size: clamp(2.5rem, 6vw, 5rem);
+  font-size: clamp(3rem, 7vw, 6rem);
   font-weight: 900;
   color: #d4ff00;
-  text-shadow: 0 0 60px rgba(212,255,0,0.4), 0 0 120px rgba(212,255,0,0.2);
-  margin-bottom: 20px;
+  text-shadow: 0 0 60px rgba(212,255,0,0.5), 0 0 120px rgba(212,255,0,0.3), 0 0 200px rgba(212,255,0,0.15);
+  margin-bottom: 50px;
+  animation: spark-glow 3s ease-in-out infinite alternate;
 }
-.spark-content p { font-size: 1.2rem; color: rgba(200,200,230,0.7); font-style: italic; max-width: 500px; margin: 0 auto; line-height: 1.6; }
+@keyframes spark-glow {
+  0% { text-shadow: 0 0 40px rgba(212,255,0,0.4), 0 0 80px rgba(212,255,0,0.2); }
+  100% { text-shadow: 0 0 80px rgba(212,255,0,0.7), 0 0 160px rgba(212,255,0,0.4), 0 0 240px rgba(212,255,0,0.2); }
+}
+.spark-quote {
+  font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+  color: rgba(220,220,240,0.9);
+  font-style: italic;
+  font-family: 'Playfair Display', serif;
+  line-height: 1.7;
+  margin: 0 auto;
+  padding: 30px 0;
+  position: relative;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.spark-quote.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.spark-quote::before {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #d4ff00, transparent);
+  margin: 0 auto 25px;
+}
+.spark-quote.hero-quote {
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  color: #fff;
+  font-weight: 700;
+  padding: 40px 0;
+}
+.spark-quote .glow-word {
+  color: #d4ff00;
+  text-shadow: 0 0 20px rgba(212,255,0,0.5);
+}
 
 /* ===== 17. AFTERGLOW ===== */
 #afterglow {
@@ -761,25 +922,24 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #f5f0e8;
+  background: #1a1040;
   overflow: hidden;
   padding: 60px 20px;
 }
-.afterglow-frame { position: relative; width: 90%; max-width: 1000px; }
-.afterglow-frame > img { width: 100%; display: block; }
+.afterglow-frame { position: relative; width: 90%; max-width: 1000px; z-index: 2; }
+.afterglow-frame > img { width: 100%; display: block; border-radius: 12px; }
 .afterglow-center {
   position: absolute;
   top: 50%; left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
+  background: rgba(255,252,235,0.92);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 40px 50px;
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0,0,0,0.1);
 }
-.afterglow-center h2 {
-  font-family: 'Playfair Display', serif;
-  font-size: clamp(1.8rem, 5vw, 3rem);
-  font-weight: 900;
-  color: #2c4a6e;
-}
-.afterglow-center p { font-family: 'Caveat', cursive; font-size: 1.3rem; color: #5a7a9a; margin-top: 8px; }
 
 /* floating creatures */
 .floating-creature {
@@ -879,7 +1039,7 @@ body {
   .worlds-split { flex-direction: column; }
   .world-card { padding: 20px; }
   .story-inner.reverse { flex-direction: column; }
-  .characters-grid { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; }
+  .characters-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
   #nav-dots { right: 8px; }
   .nav-dot { width: 7px; height: 7px; }
   body { cursor: auto; }
@@ -943,23 +1103,23 @@ body {
 
 <!-- ==================== 2. DEAR FATHER HEAR AND BLESS ==================== -->
 <section id="dear-father" class="video-section">
-  <video controls playsinline preload="metadata" poster="assets/2. Dear Father Hear and Bless/Yello2025_poster.jpg" style="border-color:rgba(212,255,0,0.3);">
+  <video autoplay loop muted playsinline preload="auto" poster="assets/2. Dear Father Hear and Bless/Yello2025_poster.jpg" style="border-color:rgba(212,255,0,0.3);">
     <source src="assets/2. Dear Father Hear and Bless/Yello2025_compressed.mp4" type="video/mp4">
   </video>
 </section>
 
 <!-- ==================== 3. INSPIRATION PAGE ==================== -->
-<section id="inspiration" class="section" style="min-height:100vh;position:relative;overflow:hidden;">
+<section id="inspiration" class="section" style="min-height:100vh;position:relative;overflow:hidden;padding:120px 20px;">
   <video id="inspiration-bg-video" autoplay loop muted playsinline preload="auto" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;z-index:0;">
     <source src="assets/3. Inspiration page/inspiration page video_compressed.mp4" type="video/mp4">
   </video>
   <div style="position:absolute;inset:0;background:rgba(0,0,40,0.55);z-index:1;"></div>
   <div class="reveal" style="position:relative;z-index:2;max-width:900px;padding:60px 40px;text-align:justify;text-align-last:left;background:rgba(0,0,30,0.55);backdrop-filter:blur(6px);border-radius:16px;border:1px solid rgba(212,255,0,0.15);box-shadow:0 0 40px rgba(0,0,0,0.3);">
     <h2 style="font-family:'Playfair Display',serif;font-size:clamp(2rem,5vw,3.5rem);font-weight:900;color:#d4ff00;margin-bottom:30px;text-shadow:0 0 30px rgba(212,255,0,0.4);text-align:center;">the inspiration for the story</h2>
-    <p style="font-size:clamp(0.9rem,1.8vw,1.15rem);line-height:1.9;color:#d4ff00;margin-bottom:24px;">In a forest that's just a stone's throw away - (unless you've got a terrible throwing arm, in that case, pack your bags for a roadtrip) there resides a dazzling species of synchronous fireflies called &ldquo;Photinus Carolinus.&rdquo; Every summer, these lovestruck luminaries woo their mates with a romantic morse code of synchronized flashing patterns and put on a light show that would make even the legendary Studio 54 disco ball green with envy.</p>
-    <p style="font-size:clamp(0.9rem,1.8vw,1.15rem);line-height:1.9;color:#d4ff00;margin-bottom:24px;">These glowing Romeo and Juliets are living the dream in the Smoky Mountain Forest of Tennessee, where trees are tall, the air is crisp as a fresh mint julep and the moonshine flows like a waterfall after a rain storm.</p>
-    <p style="font-size:clamp(0.9rem,1.8vw,1.15rem);line-height:1.9;color:#d4ff00;margin-bottom:24px;">Now, everybody LOVES a good underdog story, right? So, we thought it would be fun to cook up a tale (pun totally intended) around this REAL LIFE phenomenon, a synchronous society of fireflies, and create a character who has been dealt a hand that makes synchronization with his blinking world all but impossible.</p>
-    <p style="font-size:clamp(0.9rem,1.8vw,1.15rem);line-height:1.9;color:#d4ff00;">It's a feel-good story for all the square pegs in round holes, the odd ducks, the black sheep, the &ldquo;why can't I just fit in folks&rdquo; out there. A rallying cry to not only endure difficult circumstances but to take a victory lap around them. An invitation to embrace those quirks, missteps and faceplants, the things that make us ... well, us. Trusting in that cosmic DJ spinning tunes above, that somehow, against all odds, we too, can find our way back home, to ourselves and to our own unique light. And hey, in the meantime, we'll keep the porch light on for ya, just in case.</p>
+    <p style="font-size:clamp(0.9rem,1.8vw,1.15rem);line-height:1.9;color:#e8e8f0;margin-bottom:24px;">In a forest that's just a stone's throw away - (unless you've got a terrible throwing arm, in that case, pack your bags for a roadtrip) there resides a dazzling species of synchronous fireflies called &ldquo;Photinus Carolinus.&rdquo; Every summer, these lovestruck luminaries woo their mates with a romantic morse code of synchronized flashing patterns and put on a light show that would make even the legendary Studio 54 disco ball green with envy.</p>
+    <p style="font-size:clamp(0.9rem,1.8vw,1.15rem);line-height:1.9;color:#e8e8f0;margin-bottom:24px;">These glowing Romeo and Juliets are living the dream in the Smoky Mountain Forest of Tennessee, where trees are tall, the air is crisp as a fresh mint julep and the moonshine flows like a waterfall after a rain storm.</p>
+    <p style="font-size:clamp(0.9rem,1.8vw,1.15rem);line-height:1.9;color:#e8e8f0;margin-bottom:24px;">Now, everybody LOVES a good underdog story, right? So, we thought it would be fun to cook up a tale (pun totally intended) around this REAL LIFE phenomenon, a synchronous society of fireflies, and create a character who has been dealt a hand that makes synchronization with his blinking world all but impossible.</p>
+    <p style="font-size:clamp(0.9rem,1.8vw,1.15rem);line-height:1.9;color:#e8e8f0;">It's a feel-good story for all the square pegs in round holes, the odd ducks, the black sheep, the &ldquo;why can't I just fit in folks&rdquo; out there. A rallying cry to not only endure difficult circumstances but to take a victory lap around them. An invitation to embrace those quirks, missteps and faceplants, the things that make us ... well, us. Trusting in that cosmic DJ spinning tunes above, that somehow, against all odds, we too, can find our way back home, to ourselves and to our own unique light. And hey, in the meantime, we'll keep the porch light on for ya, just in case.</p>
   </div>
 </section>
 
@@ -993,12 +1153,10 @@ body {
 <section id="worlds" class="section">
   <div class="worlds-split">
     <div class="worlds-split-left">
-      <video autoplay loop muted playsinline preload="auto">
-        <source src="assets/7. Our worlds page/Our worlds elkmont videocompressed.mp4" type="video/mp4">
-      </video>
+      <video id="elkmont-vid" src="assets/7. Our worlds page/Our worlds elkmont videocompressed.mp4" autoplay loop muted playsinline webkit-playsinline preload="auto"></video>
     </div>
     <div class="worlds-split-right">
-      <img src="assets/7. Our worlds page/Our worlds Pigeon forge still .jpg" alt="Pigeon Forge firefly forest">
+      <video id="pigeonforge-vid" src="assets/7. Our worlds page/Our Worlds Pigeon Forge with flash video compressed.mp4" autoplay loop muted playsinline webkit-playsinline preload="auto"></video>
     </div>
   </div>
   <div class="worlds-content">
@@ -1023,43 +1181,44 @@ body {
 <div class="firefly-divider"><span class="fdot"></span><span class="fdot"></span><span class="fdot"></span><span class="fdot"></span><span class="fdot"></span></div>
 <section id="characters" class="section">
   <div style="width:100%;max-width:1200px;">
-    <h2 class="sec-title reveal">Meet the Cast</h2>
-    <p class="sec-sub reveal" style="transition-delay:0.2s;">hover to illuminate each character</p>
+    <h2 class="sec-title reveal">Meet the Star</h2>
+    <p class="sec-sub reveal" style="transition-delay:0.2s;">Bean Sparks</p>
     <div class="characters-grid">
-      <div class="char-card reveal" style="transition-delay:0.1s;">
-        <div class="char-vid"><video src="assets/8. Character descriptions/Bean Sparks assets/Bean Sparks_animated_square_compressed.mp4" autoplay loop muted playsinline></video></div>
+      <div class="char-card star reveal" style="transition-delay:0.1s;">
+        <div class="char-vid"><video src="assets/8. Character descriptions/Bean Sparks assets/Bean Sparks_animated_square_compressed.mp4" loop muted playsinline preload="metadata"></video></div>
         <div class="char-info"><h3>Bean Sparks</h3><p>This pint-sized little chappy burst onto the scene early, born three-weeks premature and as of yet, HIS TAILLIGHT REFUSES TO TURN ON! Despite his charm and tender nature, he struggles to fit into his society that demands conformity. But with a headlamp gifted by his beloved grandfather and the guidance of a mystical family legend, Bean might just discover the nightlight he needs in his lightless, confusing little bug life.</p></div>
       </div>
+      <h2 class="sec-title reveal" style="grid-column:1/-1;">Meet the Co-Stars</h2>
       <div class="char-card reveal" style="transition-delay:0.15s;">
-        <div class="char-vid"><video src="assets/8. Character descriptions/June Shiney Assets/June shiney_square_compressed.mp4" autoplay loop muted playsinline></video></div>
+        <div class="char-vid"><video src="assets/8. Character descriptions/June Shiney Assets/June shiney_square_compressed.mp4" loop muted playsinline preload="metadata"></video></div>
         <div class="char-info"><h3>June Shiney</h3><p>A real spitfire-fly who thumbs her nose at her society's cookie cutter rulebook, but beneath her fierce facade hides a fragile heart. Just as she's ready to ditch camp, fate throws her into Bean's orbit, a kindred soul who spots the glitter beneath her armor.</p></div>
       </div>
       <div class="char-card reveal" style="transition-delay:0.2s;">
-        <div class="char-vid"><video src="assets/8. Character descriptions/Arlo Huxley assets/Arlo Huxley_compressed.mp4" autoplay loop muted playsinline></video></div>
+        <div class="char-vid"><video src="assets/8. Character descriptions/Arlo Huxley assets/Arlo Huxley_compressed.mp4" loop muted playsinline preload="metadata"></video></div>
         <div class="char-info"><h3>Arlo Huxley</h3><p>Meet Arlo, a young lad who, in a mad dash for a science fair project, nabs the fireflies, discovering these glowing little wonders could help salvage his shaky 7th-grade reputation.</p></div>
       </div>
       <div class="char-card reveal" style="transition-delay:0.25s;">
-        <div class="char-vid"><video src="assets/8. Character descriptions/Wilhameena Nannyhoot Assets/Wilhameena Nannyhoot_square_compressed.mp4" autoplay loop muted playsinline></video></div>
+        <div class="char-vid"><video src="assets/8. Character descriptions/Wilhameena Nannyhoot Assets/Wilhameena Nannyhoot_square_compressed.mp4" loop muted playsinline preload="metadata"></video></div>
         <div class="char-info"><h3>Wilhameena Nannyhoot</h3><p>A cornbread cookin' country-fried Maria Von Trapp, a fame-hungry nanny with big Dollywood Dreams!</p></div>
       </div>
       <div class="char-card reveal" style="transition-delay:0.3s;">
-        <div class="char-vid"><video src="assets/8. Character descriptions/Stanley D. Bucktooth assets/Stanley D Bucktooth_square_compressed.mp4" autoplay loop muted playsinline></video></div>
+        <div class="char-vid"><video src="assets/8. Character descriptions/Stanley D. Bucktooth assets/Stanley D Bucktooth_square_compressed.mp4" loop muted playsinline preload="metadata"></video></div>
         <div class="char-info"><h3>Stanley D. Bucktooth</h3><p>A quick-witted Smoky Mountain dwelling beaver with a twang in his drawl and a twinkle in his eye. By day, he gnaws timber, by night he hosts a cooking show called &ldquo;Foraging the Forest&rdquo; for any forest critter who happens by his dam. When the firefly kiddos vanish, he finds himself in the hot seat with the bug feds &mdash; after all, he was the last to see the young campers alive.</p></div>
       </div>
       <div class="char-card reveal" style="transition-delay:0.35s;">
-        <div class="char-vid"><video src="assets/8. Character descriptions/Director Darner/Director darner_compressed.mp4" autoplay loop muted playsinline></video></div>
+        <div class="char-vid"><video src="assets/8. Character descriptions/Director Darner/Director darner_compressed.mp4" loop muted playsinline preload="metadata"></video></div>
         <div class="char-info"><h3>FBI Director Doug Darner</h3><p>The top bug and rockstar of the FBI's buzzing Insect division! Think James Bond with a thorax, chasing down six-legged suspects. His bumble profile proudly lists &ldquo;Darn!&rdquo; as his signature expletive. As he tackles the case of the missing fireflies, he falls for his deputy's sister, Mariposa Golding, much to Serafina's dismay.</p></div>
       </div>
       <div class="char-card reveal" style="transition-delay:0.4s;">
-        <div class="char-vid"><video src="assets/8. Character descriptions/Dolly Parton/Dolly Parton_square_compressed.mp4" autoplay loop muted playsinline></video></div>
+        <div class="char-vid"><video src="assets/8. Character descriptions/Dolly Parton/Dolly Parton_square_compressed.mp4" loop muted playsinline preload="metadata"></video></div>
         <div class="char-info"><h3>Dolly Parton</h3><p>The reigning Queen of Country, a philanthropic powerhouse, an icon and a TRUE Smoky Mountain Original. She's the muse behind this very project! Our fabulous four dazzle the crowd beneath a canopy of trees when &mdash; BOOM! &mdash; Dolly herself waltzes in, enchanting everyone with her angelic voice.</p></div>
       </div>
       <div class="char-card reveal" style="transition-delay:0.45s;">
-        <div class="char-vid"><video src="assets/8. Character descriptions/Agent Serafina Golding/Serafina on blank Golding_square_compressed.mp4" autoplay loop muted playsinline></video></div>
+        <div class="char-vid"><video src="assets/8. Character descriptions/Agent Serafina Golding/Serafina on blank Golding_square_compressed.mp4" loop muted playsinline preload="metadata"></video></div>
         <div class="char-info"><h3>Agent Serafina Golding</h3><p>A true blue FBI agent and sister to the flamboyant Mariposa, juggling her badge and bug duties while always striving to wow the big boss. When two firefly campers vanish into the night, Serafina might just have to swallow her pride and enlist her sister's star power to help crack the case.</p></div>
       </div>
       <div class="char-card reveal" style="transition-delay:0.5s;">
-        <div class="char-vid"><video src="assets/8. Character descriptions/Mariposa Golding/mariposa_flutter_square_compressedmp4.mp4" autoplay loop muted playsinline></video></div>
+        <div class="char-vid"><video src="assets/8. Character descriptions/Mariposa Golding/mariposa_flutter_square_compressedmp4.mp4" loop muted playsinline preload="metadata"></video></div>
         <div class="char-info"><h3>Mariposa Golding</h3><p>A glitzy billionaire beauty tycoon and social media obsessed butterfly fluttering through the internet, racking up likes and shares and whose viral fame might just hold the key to finding the missing fireflies!</p></div>
       </div>
     </div>
@@ -1086,47 +1245,43 @@ body {
 <div class="firefly-divider"><span class="fdot"></span><span class="fdot"></span><span class="fdot"></span><span class="fdot"></span><span class="fdot"></span></div>
 <section id="act-one" class="story-section dark1">
   <div class="story-inner">
-    <div class="story-visual reveal-left">
-      <img src="assets/10. the story- act one/Arriving at camp PNG.png" alt="Arriving at Camp" onclick="openLightbox(this.src)">
-    </div>
-    <div class="story-text reveal-right">
+    <div class="story-text reveal" style="max-width:100%;flex-basis:100%;">
       <span class="act-label">Act One</span>
       <h3>Born Into a Synchronous Society</h3>
       <p>BEAN SPARKS is a firefly born into a synchronous world where blinking to the same beat means survival &mdash; but he's missing the one thing they all have: A WORKING TAILLIGHT! His family loves him fiercely, but his strict lockstep society labels him defective.</p>
       <p>After a bumpy ride through school, Bean's packed off to &ldquo;Camp Glow Up Already!&rdquo; the ultimate glow-getter bioluminescent bootcamp. Enter JUNE SHINY, a rebellious spitfire-fly who's not too keen on the cookie-cutter mold she's supposed to fit into. June doesn't see Bean as broken at all, but instead sees his hidden potential, and he, in turn, sees her true inner sparkle.</p>
       <p>After a terrifying high-flying escapade, the two enroll in a course in night sound identification. But when a bone-chilling shriek pierces the night, both counselors and campers scatter like bowling pins, leaving Bean and June alone and lost in the woods. Left to their own devices, the bewildered backpackers blunder into the path of STANLEY D. BUCKTOOTH &mdash; a charismatic beaver who hosts a cooking show called &ldquo;Foraging the Forest.&rdquo;</p>
-      <div class="scene-strip">
-        <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/10. the story- act one/the story- act one- Synchronous childbirth PNG.png" alt="Synchronous childbirth"></div>
-        <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/10. the story- act one/baby nurseryng.png" alt="Baby nursery"></div>
-        <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/10. the story- act one/Nora and Neal Dancing in baby room PNG.png" alt="Nora and Neal dancing"></div>
-        <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/10. the story- act one/popular mechanics png.png" alt="Popular mechanics"></div>
-        <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/10. the story- act one/Tea with Stanley PNG.png" alt="Tea with Stanley"></div>
-        <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/10. the story- act one/music Class PNG.png" alt="Music class"></div>
-        <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/10. the story- act one/Running for lives.png" alt="Running for lives"></div>
-      </div>
+    </div>
+    <div class="scene-strip">
+      <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/10. the story- act one/Arriving at camp PNG.png" alt="Arriving at Camp"></div>
+      <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/10. the story- act one/the story- act one- Synchronous childbirth PNG.png" alt="Synchronous childbirth"></div>
+      <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/10. the story- act one/baby nurseryng.png" alt="Baby nursery"></div>
+      <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/10. the story- act one/Nora and Neal Dancing in baby room PNG.png" alt="Nora and Neal dancing"></div>
+      <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/10. the story- act one/popular mechanics png.png" alt="Popular mechanics"></div>
+      <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/10. the story- act one/Tea with Stanley PNG.png" alt="Tea with Stanley"></div>
+      <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/10. the story- act one/music Class PNG.png" alt="Music class"></div>
+      <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/10. the story- act one/Running for lives.png" alt="Running for lives"></div>
     </div>
   </div>
 </section>
 
 <!-- ==================== 11. THE STORY — ACT TWO ==================== -->
 <section id="act-two" class="story-section dark2">
-  <div class="story-inner reverse">
-    <div class="story-visual reveal-right">
-      <img src="assets/11. the story- act two/Bean and June react to Cal laughing in jar.png" alt="Bean and June in jar" onclick="openLightbox(this.src)">
-    </div>
-    <div class="story-text reveal-left">
+  <div class="story-inner">
+    <div class="story-text reveal" style="max-width:100%;flex-basis:100%;">
       <span class="act-label">Act Two</span>
       <h3>Captured by the Humans</h3>
       <p>While Stanley is out hunting chicory root to rouse a snoozing June, the fireflies are captured by ARLO HUXLEY, a human boy scrambling for a last-minute science fair project. When Arlo's best bud CAL mocks his project &mdash; &ldquo;JUST SOME BORING BUGS&rdquo; &mdash; the fireflies take ROYAL OFFENSE and vow to outshine Cal and his soap volcano.</p>
       <p>They secretly learn a dance routine from WILHAMEENA NANNYHOOT, Arlo's fame-hungry nanny, and perform it at the science fair &mdash; stunning the class like tiny synchronized swimmers at a rock concert! They steal the show and win first prize. But Nannyhoot, furious at being upstaged, concocts a scheme to steal back her limelight by entering the TINY TOWN TALENT SHOW, a national TV talent show contest &mdash; with the fireflies locked up in a jar as her star act.</p>
-      <div class="scene-strip">
-        <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/11. the story- act two/Arlo traps the bugs PNG.png" alt="Arlo traps the bugs"></div>
-        <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/11. the story- act two/Dusting jar of fireflies PNG.png" alt="Dusting jar"></div>
-        <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/11. the story- act two/Bugs learning the 90s dance in jar PNG.png" alt="Learning dance in jar"></div>
-        <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/11. the story- act two/Wilhameenas tryouts PNG.png" alt="Wilhameena's tryouts"></div>
-        <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/11. the story- act two/Science Fair Dance PNG.png" alt="Science fair dance"></div>
-        <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/11. the story- act two/Arlo and Wilhameena win science fair.png" alt="Winning science fair"></div>
-      </div>
+    </div>
+    <div class="scene-strip">
+      <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/11. the story- act two/Bean and June react to Cal laughing in jar.png" alt="Bean and June in jar"></div>
+      <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/11. the story- act two/Arlo traps the bugs PNG.png" alt="Arlo traps the bugs"></div>
+      <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/11. the story- act two/Dusting jar of fireflies PNG.png" alt="Dusting jar"></div>
+      <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/11. the story- act two/Bugs learning the 90s dance in jar PNG.png" alt="Learning dance in jar"></div>
+      <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/11. the story- act two/Wilhameenas tryouts PNG.png" alt="Wilhameena's tryouts"></div>
+      <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/11. the story- act two/Science Fair Dance PNG.png" alt="Science fair dance"></div>
+      <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/11. the story- act two/Arlo and Wilhameena win science fair.png" alt="Winning science fair"></div>
     </div>
   </div>
 </section>
@@ -1152,47 +1307,43 @@ body {
 <!-- ==================== 12. THE STORY — ACT THREE ==================== -->
 <section id="act-three" class="story-section dark1">
   <div class="story-inner">
-    <div class="story-visual reveal-left">
-      <img src="assets/12. the story- act three/rescue on stage.png" alt="Rescue on stage" onclick="openLightbox(this.src)">
-    </div>
-    <div class="story-text reveal-right">
+    <div class="story-text reveal" style="max-width:100%;flex-basis:100%;">
       <span class="act-label">Act Three</span>
       <h3>A New Plan for Fame</h3>
       <p>Nannyhoot splices in the dancing fireflies along with her and Arlo's dance routine to create a formidable audition tape &mdash; and Elkmont wins a shot to audition before the talent scouts! Meanwhile, back at camp, chaos erupts. MISSING FIREFLIES? THIS HAS NEVER HAPPENED BEFORE IN THE HISTORY OF CAMP!!! The Insect FBI are called in and a battalion of bugs, birds and butterflies launch a covert rescue mission.</p>
       <p>During Elkmont's scouting audition, the bug rescue team swoops in and plucks Bean and June from the stage right before Elkmont's big encore and spirits them back to the safety of basecamp. But now the town's left without their star winning act a mere 24-hours before showtime, while Nannyhoot and Arlo race to train replacement bugs &mdash; but unfortunately, these understudies are truly &ldquo;just boring bugs.&rdquo;</p>
-      <div class="scene-strip">
-        <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/12. the story- act three/Discovering bugs are gone .png" alt="Discovering bugs are gone"></div>
-        <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/12. the story- act three/Terrible news PNG.png" alt="Terrible news"></div>
-        <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/12. the story- act three/Meeting with the FBI PNG.png" alt="Meeting with FBI"></div>
-        <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/12. the story- act three/Passenger pigeons posting posters.png" alt="Pigeons posting"></div>
-        <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/12. the story- act three/Trying to teach Bob and Janet.png" alt="Teaching Bob and Janet"></div>
-        <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/12. the story- act three/Mariposa accusing Loomis.png" alt="Mariposa accuses"></div>
-        <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/12. the story- act three/Stanley charges backstage.png" alt="Stanley backstage"></div>
-        <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/12. the story- act three/Golf cart crash.png" alt="Golf cart crash"></div>
-      </div>
+    </div>
+    <div class="scene-strip">
+      <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/12. the story- act three/rescue on stage.png" alt="Rescue on stage"></div>
+      <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/12. the story- act three/Discovering bugs are gone .png" alt="Discovering bugs are gone"></div>
+      <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/12. the story- act three/Terrible news PNG.png" alt="Terrible news"></div>
+      <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/12. the story- act three/Meeting with the FBI PNG.png" alt="Meeting with FBI"></div>
+      <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/12. the story- act three/Passenger pigeons posting posters.png" alt="Pigeons posting"></div>
+      <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/12. the story- act three/Trying to teach Bob and Janet.png" alt="Teaching Bob and Janet"></div>
+      <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/12. the story- act three/Mariposa accusing Loomis.png" alt="Mariposa accuses"></div>
+      <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/12. the story- act three/Stanley charges backstage.png" alt="Stanley backstage"></div>
+      <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/12. the story- act three/Golf cart crash.png" alt="Golf cart crash"></div>
     </div>
   </div>
 </section>
 
 <!-- ==================== 13. THE STORY — FINALE ==================== -->
 <section id="finale" class="story-section dark2">
-  <div class="story-inner reverse">
-    <div class="story-visual reveal-right">
-      <img src="assets/13. the story- finale/Fireflies relight the stage.png" alt="Fireflies relight the stage" onclick="openLightbox(this.src)">
-    </div>
-    <div class="story-text reveal-left">
+  <div class="story-inner">
+    <div class="story-text reveal" style="max-width:100%;flex-basis:100%;">
       <span class="act-label">The Finale</span>
       <h3>Stanley Vows to Save the Sinking Show</h3>
       <p>Stanley strikes a deal: he'll bring back the REAL dancing fireflies to perform, if he gets a prime spot on the night's show bill. Just as the deal is sealed, the show begins and Cal's volcano explodes onto the electrical system, plunging the tv show and audience into complete darkness. Stanley steals a security golf cart to race back to camp to convince the ENTIRE community of fireflies to return to relight the stage.</p>
       <p>Moved by Stanley's plea, Bean rallies his firefly community to re-light the forest stage. Like a grand parade, the fireflies flank the golf cart, creating a mystical moving wall of light with Bean's headlight leading the way. The fireflies RE-LIGHT the stage, and Bean and June make a TRIUMPHANT RETURN. Then &mdash; DOLLY PARTON, HERSELF, steps out onstage and joins the four singing her song. Dolly awards the four dancers a special invitation to join her at DOLLYWOOD. And in the end, in a world that once called him different, Bean finally finds a place where he truly belongs &mdash; just exactly as he is.</p>
-      <div class="scene-strip">
-        <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/13. the story- finale/breaking bad news to contestants.png" alt="Breaking bad news"></div>
-        <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/13. the story- finale/Fainting on stage.png" alt="Fainting on stage"></div>
-        <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/13. the story- finale/flying cart through the forest.png" alt="Cart through forest"></div>
-        <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/13. the story- finale/volcano aftermath.png" alt="Volcano aftermath"></div>
-        <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/13. the story- finale/Dolly surprises everyone.png" alt="Dolly's surprise"></div>
-        <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/13. the story- finale/Last scene PNG.png" alt="Last scene"></div>
-      </div>
+    </div>
+    <div class="scene-strip">
+      <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/13. the story- finale/Fireflies relight the stage.png" alt="Fireflies relight the stage"></div>
+      <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/13. the story- finale/breaking bad news to contestants.png" alt="Breaking bad news"></div>
+      <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/13. the story- finale/Fainting on stage.png" alt="Fainting on stage"></div>
+      <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/13. the story- finale/flying cart through the forest.png" alt="Cart through forest"></div>
+      <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/13. the story- finale/volcano aftermath.png" alt="Volcano aftermath"></div>
+      <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/13. the story- finale/Dolly surprises everyone.png" alt="Dolly's surprise"></div>
+      <div class="scene-thumb" onclick="openLightbox(this.querySelector('img').src)"><img src="assets/13. the story- finale/Last scene PNG.png" alt="Last scene"></div>
     </div>
   </div>
 </section>
@@ -1271,12 +1422,12 @@ body {
 <!-- ==================== 15. FINAL SPARK ==================== -->
 <div class="firefly-divider"><span class="fdot"></span><span class="fdot"></span><span class="fdot"></span><span class="fdot"></span><span class="fdot"></span></div>
 <section id="final-spark" class="section">
-  <div class="spark-content reveal-scale">
-    <h2>the final spark</h2>
-    <p>&ldquo;In a sea of taillights, one headlight leads the way.&rdquo;</p>
-    <p style="margin-top:20px;">&ldquo;In a world that demands conformity &mdash; one firefly dares to dance his own way.&rdquo;</p>
-    <p style="margin-top:20px;">&ldquo;One little firefly, one big problem, one grand adventure!&rdquo;</p>
-    <p style="margin-top:20px;">&ldquo;In a world that once called him different, Bean finds a place where he finally fits in &mdash; just exactly as he is.&rdquo;</p>
+  <div class="spark-content">
+    <h2 class="reveal-scale">the final spark</h2>
+    <div class="spark-quote hero-quote reveal" style="transition-delay:0.3s;">&ldquo;In a sea of <span class="glow-word">taillights</span>, one <span class="glow-word">headlight</span> leads the way.&rdquo;</div>
+    <div class="spark-quote reveal" style="transition-delay:0.7s;">&ldquo;In a world that demands conformity &mdash; one firefly dares to <span class="glow-word">dance his own way</span>.&rdquo;</div>
+    <div class="spark-quote reveal" style="transition-delay:1.1s;">&ldquo;One little firefly, one big problem, one <span class="glow-word">grand adventure</span>!&rdquo;</div>
+    <div class="spark-quote hero-quote reveal" style="transition-delay:1.5s;">&ldquo;In a world that once called him <em>different</em>, Bean finds a place where he finally fits in &mdash; <span class="glow-word">just exactly as he is</span>.&rdquo;</div>
   </div>
 </section>
 
@@ -1300,25 +1451,43 @@ body {
 
 <!-- ==================== 17. AFTERGLOW ==================== -->
 <section id="afterglow" class="section">
-  <!-- Floating creatures -->
-  <div class="floating-creature" style="width:80px;height:80px;top:8%;left:5%;animation-duration:12s;"><img src="assets/17. afterglow/monarch butterfly.png" alt=""></div>
-  <div class="floating-creature" style="width:70px;height:70px;top:15%;right:8%;animation-duration:14s;animation-delay:-3s;"><img src="assets/17. afterglow/blue flutterby in flight copy.png" alt=""></div>
-  <div class="floating-creature" style="width:60px;height:60px;bottom:20%;left:8%;animation-duration:11s;animation-delay:-5s;"><img src="assets/17. afterglow/pink hummingbird.png" alt=""></div>
-  <div class="floating-creature" style="width:75px;height:75px;bottom:12%;right:5%;animation-duration:13s;animation-delay:-2s;"><img src="assets/17. afterglow/happy dragonfly.png" alt=""></div>
-  <div class="floating-creature" style="width:55px;height:55px;top:40%;left:3%;animation-duration:15s;animation-delay:-7s;"><img src="assets/17. afterglow/lady bug.png" alt=""></div>
-  <div class="floating-creature" style="width:65px;height:65px;top:30%;right:3%;animation-duration:10s;animation-delay:-4s;"><img src="assets/17. afterglow/yellow butterfly.png" alt=""></div>
-  <div class="floating-creature" style="width:50px;height:50px;top:60%;left:6%;animation-duration:16s;animation-delay:-6s;"><img src="assets/17. afterglow/red breasted robin.png" alt=""></div>
-  <div class="floating-creature" style="width:70px;height:70px;bottom:30%;right:7%;animation-duration:12s;animation-delay:-8s;"><img src="assets/17. afterglow/mint butterfly.png" alt=""></div>
-  <div class="floating-creature" style="width:60px;height:60px;top:5%;left:40%;animation-duration:14s;animation-delay:-1s;"><img src="assets/17. afterglow/Firefly.png" alt=""></div>
-  <div class="floating-creature" style="width:55px;height:55px;bottom:8%;left:35%;animation-duration:11s;animation-delay:-9s;"><img src="assets/17. afterglow/snail.png" alt=""></div>
+  <!-- Floating creatures — butterflies, moths, birds, bugs, flowers, leaves -->
+  <!-- Top edge -->
+  <div class="floating-creature" style="width:90px;height:90px;top:2%;left:5%;animation-duration:14s;"><img src="assets/17. afterglow/monarch butterfly.png" alt=""></div>
+  <div class="floating-creature" style="width:80px;height:80px;top:3%;left:20%;animation-duration:16s;animation-delay:-2s;"><img src="assets/17. afterglow/Pastel moth.png" alt=""></div>
+  <div class="floating-creature" style="width:70px;height:70px;top:1%;left:38%;animation-duration:12s;animation-delay:-5s;"><img src="assets/17. afterglow/aqua marine butterfly copy.png" alt=""></div>
+  <div class="floating-creature" style="width:75px;height:75px;top:4%;right:25%;animation-duration:15s;animation-delay:-3s;"><img src="assets/17. afterglow/blue flutterby in flight copy.png" alt=""></div>
+  <div class="floating-creature" style="width:85px;height:85px;top:2%;right:5%;animation-duration:13s;animation-delay:-7s;"><img src="assets/17. afterglow/autumn flutter .png" alt=""></div>
+  <!-- Left edge -->
+  <div class="floating-creature" style="width:75px;height:75px;top:15%;left:2%;animation-duration:11s;animation-delay:-1s;"><img src="assets/17. afterglow/pink hummingbird.png" alt=""></div>
+  <div class="floating-creature" style="width:65px;height:65px;top:30%;left:3%;animation-duration:17s;animation-delay:-4s;"><img src="assets/17. afterglow/blue jay png.png" alt=""></div>
+  <div class="floating-creature" style="width:55px;height:55px;top:45%;left:2%;animation-duration:13s;animation-delay:-8s;"><img src="assets/17. afterglow/lady bug.png" alt=""></div>
+  <div class="floating-creature" style="width:70px;height:70px;top:60%;left:3%;animation-duration:15s;animation-delay:-6s;"><img src="assets/17. afterglow/happy dragonfly.png" alt=""></div>
+  <div class="floating-creature" style="width:60px;height:60px;top:75%;left:2%;animation-duration:12s;animation-delay:-10s;"><img src="assets/17. afterglow/green beetle.png" alt=""></div>
+  <!-- Right edge -->
+  <div class="floating-creature" style="width:80px;height:80px;top:15%;right:2%;animation-duration:14s;animation-delay:-2s;"><img src="assets/17. afterglow/red breasted robin.png" alt=""></div>
+  <div class="floating-creature" style="width:60px;height:60px;top:30%;right:3%;animation-duration:16s;animation-delay:-5s;"><img src="assets/17. afterglow/yellow butterfly.png" alt=""></div>
+  <div class="floating-creature" style="width:70px;height:70px;top:45%;right:2%;animation-duration:11s;animation-delay:-9s;"><img src="assets/17. afterglow/mint butterfly.png" alt=""></div>
+  <div class="floating-creature" style="width:55px;height:55px;top:60%;right:4%;animation-duration:18s;animation-delay:-3s;"><img src="assets/17. afterglow/irridescence beetle.png" alt=""></div>
+  <div class="floating-creature" style="width:75px;height:75px;top:75%;right:2%;animation-duration:13s;animation-delay:-7s;"><img src="assets/17. afterglow/pink dragonfly.png" alt=""></div>
+  <!-- Bottom edge -->
+  <div class="floating-creature" style="width:65px;height:65px;bottom:3%;left:8%;animation-duration:15s;animation-delay:-4s;"><img src="assets/17. afterglow/snail.png" alt=""></div>
+  <div class="floating-creature" style="width:80px;height:80px;bottom:2%;left:25%;animation-duration:12s;animation-delay:-6s;"><img src="assets/17. afterglow/wide wing bluey (8).png" alt=""></div>
+  <div class="floating-creature" style="width:70px;height:70px;bottom:4%;right:30%;animation-duration:14s;animation-delay:-1s;"><img src="assets/17. afterglow/Firefly.png" alt=""></div>
+  <div class="floating-creature" style="width:75px;height:75px;bottom:2%;right:8%;animation-duration:16s;animation-delay:-8s;"><img src="assets/17. afterglow/red throated hummingbird.png" alt=""></div>
+  <!-- Extra scattered -->
+  <div class="floating-creature" style="width:50px;height:50px;top:20%;left:15%;animation-duration:19s;animation-delay:-11s;"><img src="assets/17. afterglow/autumn leaves.png" alt=""></div>
+  <div class="floating-creature" style="width:60px;height:60px;top:10%;right:15%;animation-duration:17s;animation-delay:-6s;"><img src="assets/17. afterglow/blubird.png" alt=""></div>
+  <div class="floating-creature" style="width:55px;height:55px;bottom:15%;left:12%;animation-duration:14s;animation-delay:-3s;"><img src="assets/17. afterglow/brown moth.png" alt=""></div>
+  <div class="floating-creature" style="width:65px;height:65px;bottom:20%;right:12%;animation-duration:12s;animation-delay:-9s;"><img src="assets/17. afterglow/yellowbird.png" alt=""></div>
+  <div class="floating-creature" style="width:50px;height:50px;top:50%;left:10%;animation-duration:20s;animation-delay:-5s;"><img src="assets/17. afterglow/rainbow beetle.png" alt=""></div>
+  <div class="floating-creature" style="width:70px;height:70px;top:50%;right:10%;animation-duration:15s;animation-delay:-12s;"><img src="assets/17. afterglow/flutterby rainbo.png" alt=""></div>
+  <div class="floating-creature" style="width:45px;height:45px;top:85%;left:45%;animation-duration:13s;animation-delay:-7s;"><img src="assets/17. afterglow/lucky dragonfly).png" alt=""></div>
+  <div class="floating-creature" style="width:60px;height:60px;top:8%;left:55%;animation-duration:16s;animation-delay:-10s;"><img src="assets/17. afterglow/blue monarch copy.png" alt=""></div>
 
+  <!-- Collage centerpiece — image already contains the Dear Dolly letter -->
   <div class="afterglow-frame reveal-scale">
-    <img src="assets/17. afterglow/the afterglow.png" alt="The Afterglow - nature collage">
-    <div class="afterglow-center" style="width:70%;max-width:700px;">
-      <h2 style="font-size:clamp(1.2rem,3vw,2rem);margin-bottom:12px;">Dear Dolly,</h2>
-      <p style="font-family:'Inter',sans-serif;font-size:clamp(0.6rem,1.3vw,0.95rem);color:#333;line-height:1.6;text-align:center;">From the very moment this tale was conceived, we couldn't picture anyone more perfect to breathe magic into it than you. The whole planet knows you as a beacon of kindness, love, and harmony&mdash;qualities that resonate deeply with the essence of this story. TAILLIGHTS is a jubilant anthem celebrating each person's unique light, choosing hugs and high-fives over headbutts, reminding us that we're all just trying to navigate this earthly adventure together, humans and critters alike.</p>
-      <p style="font-family:'Inter',sans-serif;font-size:clamp(0.6rem,1.3vw,0.95rem);color:#333;line-height:1.6;text-align:center;margin-top:10px;">At its heart, this film is about finding our way home to our authentic selves&mdash;and to one another. You're not just our dream casting&mdash;you are the heartbeat of this story. We'd be over the moon to embark on this journey together, crafting something joyful, meaningful that gives children and adults around the world a reason to come together and celebrate!</p>
-    </div>
+    <img src="assets/17. afterglow/the afterglow_edited.png" alt="The Afterglow - Dear Dolly letter">
   </div>
 </section>
 
@@ -1413,7 +1582,7 @@ class Firefly {
     this.vx *= 0.99;
     this.vy *= 0.99;
     const dx = this.x - mouseX;
-    const dy = this.y - (mouseY + window.scrollY);
+    const dy = this.y - mouseY;
     const dist = Math.sqrt(dx * dx + dy * dy);
     if (dist < 150) {
       this.vx += dx / dist * 0.3;
@@ -1430,22 +1599,21 @@ class Firefly {
   }
   draw() {
     if (this.brightness < 0.05) return;
-    const screenY = this.y - window.scrollY;
-    if (screenY < -50 || screenY > canvas.height + 50) return;
+    if (this.y < -50 || this.y > canvas.height + 50) return;
     ctx.save();
     ctx.globalAlpha = this.brightness;
-    const g = ctx.createRadialGradient(this.x, screenY, 0, this.x, screenY, this.size * 8);
+    const g = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.size * 8);
     g.addColorStop(0, 'rgba(212, 255, 0, 0.4)');
     g.addColorStop(0.3, 'rgba(180, 230, 0, 0.15)');
     g.addColorStop(1, 'transparent');
     ctx.fillStyle = g;
     ctx.beginPath();
-    ctx.arc(this.x, screenY, this.size * 8, 0, Math.PI * 2);
+    ctx.arc(this.x, this.y, this.size * 8, 0, Math.PI * 2);
     ctx.fill();
     ctx.globalAlpha = this.brightness * 1.2;
     ctx.fillStyle = '#d4ff00';
     ctx.beginPath();
-    ctx.arc(this.x, screenY, this.size, 0, Math.PI * 2);
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
   }
@@ -1494,31 +1662,49 @@ window.addEventListener('scroll', () => {
 let jarShakeCount = 0;
 function shakeJar() {
   const jar = document.getElementById('mason-jar');
+  if (jar.classList.contains('open')) return;
   jar.classList.remove('shake');
   void jar.offsetWidth;
   jar.classList.add('shake');
   jarShakeCount++;
-  if (jarShakeCount >= 5) {
+  // Update text to show progress
+  const remaining = 2 - jarShakeCount;
+  if (remaining > 0) {
+    document.getElementById('jar-sub').textContent = remaining + ' more click' + (remaining > 1 ? 's' : '') + ' to set them free...';
+  }
+  if (jarShakeCount >= 2) {
+    // Open the lid!
+    jar.classList.add('open');
     const rect = jar.getBoundingClientRect();
     const cx = rect.left + rect.width / 2;
-    const cy = rect.top + rect.height / 2;
-    for (let i = 0; i < 25; i++) {
+    const cy = rect.top;
+    // Release a burst of fireflies from the jar opening
+    for (let i = 0; i < 30; i++) {
       const f = new Firefly();
-      f.x = cx + (Math.random() - 0.5) * 50;
-      f.y = cy + window.scrollY + (Math.random() - 0.5) * 50;
-      f.vx = (Math.random() - 0.5) * 6;
-      f.vy = -Math.random() * 5 - 2;
+      f.x = cx + (Math.random() - 0.5) * 80;
+      f.y = cy + (Math.random() - 0.5) * 30;
+      f.vx = (Math.random() - 0.5) * 8;
+      f.vy = -Math.random() * 6 - 3;
       f.brightness = 1;
       f.maxBrightness = 1;
-      f.size = Math.random() * 3 + 2;
+      f.size = Math.random() * 4 + 2;
       fireflies.push(f);
     }
     jar.querySelector('.jar-glass').style.borderColor = 'rgba(212,255,0,0.6)';
-    jar.querySelector('.jar-glass').style.boxShadow = '0 0 40px rgba(212,255,0,0.3)';
+    jar.querySelector('.jar-glass').style.boxShadow = '0 0 60px rgba(212,255,0,0.4)';
     document.getElementById('jar-title').textContent = "They're free!";
     document.getElementById('jar-sub').textContent = "You released a swarm of fireflies into the night!";
-    jarShakeCount = 0;
-    setTimeout(() => { while (fireflies.length > FIREFLY_COUNT + 10) fireflies.pop(); }, 8000);
+    // Reset after a while so they can do it again
+    setTimeout(() => {
+      while (fireflies.length > FIREFLY_COUNT + 10) fireflies.pop();
+      jar.classList.remove('open', 'shake');
+      jar.querySelector('.jar-glass').style.borderColor = '';
+      jar.querySelector('.jar-glass').style.boxShadow = '';
+      document.querySelectorAll('.jar-firefly').forEach(f => { f.style.animation = ''; f.style.opacity = ''; });
+      document.getElementById('jar-title').textContent = "Click the jar to set them free";
+      document.getElementById('jar-sub').textContent = "Bean and June are counting on you...";
+      jarShakeCount = 0;
+    }, 6000);
   }
 }
 
@@ -1579,6 +1765,16 @@ document.addEventListener('click', function playBgVideos() {
   if (bgVid && bgVid.paused) bgVid.play().catch(() => {});
 }, { once: true });
 
+// ===== FORCE PLAY WORLDS BACKGROUND VIDEOS =====
+['elkmont-vid','pigeonforge-vid'].forEach(id => {
+  const v = document.getElementById(id);
+  if (v) {
+    v.muted = true;
+    v.play().catch(() => {});
+    v.addEventListener('loadeddata', () => v.play().catch(() => {}));
+  }
+});
+
 // ===== PAUSE/PLAY VIDEOS ON VISIBILITY =====
 const autoVideos = document.querySelectorAll('video[autoplay]');
 const vidObs = new IntersectionObserver((entries) => {
@@ -1588,6 +1784,14 @@ const vidObs = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0.2 });
 autoVideos.forEach(v => vidObs.observe(v));
+
+// ===== CHARACTER CARD HOVER PLAY =====
+document.querySelectorAll('.char-card').forEach(card => {
+  const vid = card.querySelector('.char-vid video');
+  if (!vid) return;
+  card.addEventListener('mouseenter', () => { vid.currentTime = 0; vid.play(); });
+  card.addEventListener('mouseleave', () => { vid.pause(); vid.currentTime = 0; });
+});
 </script>
 </body>
 </html>
